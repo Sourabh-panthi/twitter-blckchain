@@ -11,6 +11,7 @@
     "react-dom": "18.1.0",
     "react-hexagon-grid": "^1.1.1",
     "react-icons": "^4.6.0",
+    "tailwind-scrollbar-hide": "^1.1.7",
     "timeago.js": "^4.0.2"
   },
   "devDependencies": {

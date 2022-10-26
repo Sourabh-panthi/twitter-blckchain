@@ -78,7 +78,7 @@ const Sidebar = ({ initialSelectedIcon = "Home" }) => {
 
         <SidebarOptions
           Icon={selected === "Profile" ? BsPersonFill : BsPerson}
-          Text="Profile"
+          text="Profile"
           isActive={Boolean(selected === "Profile")}
           setSelected={setSelected}
           redirect={"/profile"}
