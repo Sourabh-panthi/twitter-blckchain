@@ -1,3 +1,4 @@
+const hre = require("hardhat");
 const main = async () => {
   const profileImageFactory = await hre.ethers.getContractFactory(
     "ProfileImageNfts"
