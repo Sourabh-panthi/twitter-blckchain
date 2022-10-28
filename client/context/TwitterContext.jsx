@@ -1,10 +1,10 @@
 import { createContext, useState, useEffect } from "react";
 import { useRouter } from "next/router";
-
+import { client } from "../lib/client";
 export const TwitterContext = createContext();
 
 export const TwitterProvider = ({ children }) => {
-  const [appStatus, setAppStatus] = useState("Loading");
+  const [appStatus, setAppStatus] = useState("loading");
   const [currentAccount, setCurrentAccount] = useState("");
   const router = useRouter();
 
@@ -22,6 +22,7 @@ export const TwitterProvider = ({ children }) => {
         //connected
         setAppStatus("connected");
         setCurrentAccount(addressArray[0]);
+        createUserAccount(addressArray[0]);
       } else {
         //notConnected
         router.push("/");
@@ -31,6 +32,35 @@ export const TwitterProvider = ({ children }) => {
       console.log(error);
     }
   };
+
+  /**
+   * Creates an account in Sanity DB if the user does not already have one
+   * @param {String} userAddress Wallet address of the currently logged in user
+   */
+  const createUserAccount = async (userAddress = currentAccount) => {
+    if (!window.ethereum) return setAppStatus("noMetamask");
+
+    try {
+      const userDoc = {
+        _type: "users",
+        _id: userAddress,
+        name: "Unnamed",
+        isProfileImageNft: false,
+        profileImage:
+          "https://about.twitter.com/content/dam/about-twitter/en/brand-toolkit/brand-download-img-1.jpg.twimg.1920.jpg",
+        walletAddress: userAddress,
+      };
+
+      await client.createIfNotExists(userDoc);
+      console.log("running yes");
+
+      setAppStatus("connected");
+    } catch (error) {
+      router.push("/");
+      setAppStatus("error");
+    }
+  };
+
   // initiate metamask wallet connection
   const connectWallet = async () => {
     if (!window.ethereum) return setAppStatus("noMetamask");
@@ -41,14 +71,16 @@ export const TwitterProvider = ({ children }) => {
       });
       if (addressArray.length > 0) {
         setCurrentAccount(addressArray[0]);
+        createUserAccount(addressArray[0]);
       } else {
         router.push("/");
         setAppStatus("notConnected");
       }
-    } catch (error) {
-      console.log(error);
+    } catch (err) {
+      setAppStatus("error");
     }
   };
+
   return (
     <TwitterContext.Provider
       value={{ appStatus, currentAccount, connectWallet }}

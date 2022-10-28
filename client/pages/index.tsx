@@ -6,6 +6,7 @@ import Widgets from "../components/Widgets";
 import Image from "next/image";
 import metamask from "../assets/metamask.png";
 import errorImg from "../assets/error.png";
+
 const styles = {
   wrapper: `flex justify-center h-screen w-screen  select-none bg-[#15202b] text-white overflow-hidden `,
   content: `max-w-[1400px] w-3/4 flex justify-between `,
@@ -16,9 +17,7 @@ const styles = {
 
 const Home = () => {
   const { appStatus, connectWallet } = useContext(TwitterContext);
-  console.log("🚀 ~ file: index.jsx ~ line 19 ~ Home ~ appStḁtus", appStḁtus);
-
-  const app = (status) => {
+  const app = (status = appStatus) => {
     switch (status) {
       case "connected":
         return userLogedin;
@@ -28,9 +27,6 @@ const Home = () => {
 
       case "noMetamask":
         return noMetamaskFound;
-
-      case "connected":
-        return userLogedin;
 
       case "error":
         return error;
@@ -50,9 +46,13 @@ const Home = () => {
   const noUserFound = (
     <div className={styles.loginContainer}>
       <Image src={metamask} height={200} width={200} />
-      <div className={styles.walletConnectButton} onClick={() => connectWallet}>
-        <div> Connect Wallet</div>
+      <div
+        className={styles.walletConnectButton}
+        onClick={() => connectWallet()}
+      >
+        Connect Wallet
       </div>
+      <div className={styles.loginContent}> Connect to wallet</div>
     </div>
   );
 
@@ -65,6 +65,7 @@ const Home = () => {
           target="_blank"
           rel=" noreferrer"
           href={`https://metamask.io/download.html`}
+          className={styles.loginContent}
         >
           You must download the Metamask, a <br /> virtual Ethereum wallet for
           this browser
@@ -88,7 +89,7 @@ const Home = () => {
     </div>
   );
 
-  return <div className={styles.wrapper}> {error}</div>;
+  return <div className={styles.wrapper}> {app(appStatus)}</div>;
 };
 
 export default Home;
