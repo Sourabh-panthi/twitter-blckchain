@@ -2,6 +2,9 @@ import React from "react";
 import { BsStar } from "react-icons/bs";
 import TweetBox from "./TweetBox";
 import Post from "./Post";
+import { TwitterContext } from "../../context/TwitterContext";
+import { useContext } from "react";
+
 const styles = {
   wrapper:
     "flex-[2] border-r border-l border-[#38444d] overflow-scroll scrollbar-hide",
@@ -10,73 +13,9 @@ const styles = {
   headerTitle: "text-xl font-bold",
 };
 
-const tweets = [
-  {
-    displayName: "Sourabh",
-    userName: "0xe7DdF0e682D26d2593a03a988262735117891321",
-    avatar:
-      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR0Oz7qFkEu4glfAdPPLFKOg7aqx_fdekNoIw&usqp=CAU",
-    text: "gm",
-    isProfileImageNft: false,
-    timestamp: "2020-06-01t12:00:00.000z",
-  },
-  {
-    displayName: "Sourabh",
-    userName: "0xe7DdF0e682D26d2593a03a988262735117891321",
-    avatar:
-      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR0Oz7qFkEu4glfAdPPLFKOg7aqx_fdekNoIw&usqp=CAU",
-    text: "gm",
-    isProfileImageNft: false,
-    timestamp: "2020-06-01t12:00:00.000z",
-  },
-  {
-    displayName: "Sourabh",
-    userName: "0xe7DdF0e682D26d2593a03a988262735117891321",
-    avatar:
-      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR0Oz7qFkEu4glfAdPPLFKOg7aqx_fdekNoIw&usqp=CAU",
-    text: "gm",
-    isProfileImageNft: false,
-    timestamp: "2020-06-01t12:00:00.000z",
-  },
-  {
-    displayName: "Sourabh",
-    userName: "0xe7DdF0e682D26d2593a03a988262735117891321",
-    avatar:
-      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR0Oz7qFkEu4glfAdPPLFKOg7aqx_fdekNoIw&usqp=CAU",
-    text: "gm",
-    isProfileImageNft: false,
-    timestamp: "2020-06-01t12:00:00.000z",
-  },
-  {
-    displayName: "Sourabh",
-    userName: "0xe7DdF0e682D26d2593a03a988262735117891321",
-    avatar:
-      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR0Oz7qFkEu4glfAdPPLFKOg7aqx_fdekNoIw&usqp=CAU",
-    text: "gm",
-    isProfileImageNft: false,
-    timestamp: "2020-06-01t12:00:00.000z",
-  },
-  {
-    displayName: "Sourabh",
-    userName: "0xe7DdF0e682D26d2593a03a988262735117891321",
-    avatar:
-      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR0Oz7qFkEu4glfAdPPLFKOg7aqx_fdekNoIw&usqp=CAU",
-    text: "gm",
-    isProfileImageNft: false,
-    timestamp: "2020-06-01t12:00:00.000z",
-  },
-  {
-    displayName: "Sourabh",
-    userName: "0xe7DdF0e682D26d2593a03a988262735117891321",
-    avatar:
-      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR0Oz7qFkEu4glfAdPPLFKOg7aqx_fdekNoIw&usqp=CAU",
-    text: "gm",
-    isProfileImageNft: false,
-    timestamp: "2020-06-01t12:00:00.000z",
-  },
-];
-
 const Feed = () => {
+  const { currentAccount, CurrentUser, tweets } = useContext(TwitterContext);
+  console.log("tweets", CurrentUser);
   return (
     <div className={styles.wrapper}>
       <div className={styles.header}>
@@ -90,10 +29,20 @@ const Feed = () => {
         tweets.map((tweet, index) => (
           <Post
             key={index}
-            displayName={tweet.displayName}
-            userName={tweet.userName}
-            avatar={tweet.avatar}
-            text={tweet.text}
+            displayName={
+              tweet.author.name === "Unnamed"
+                ? `${tweet.author.walletAddress.slice(
+                    0,
+                    4
+                  )}...${tweet.author.walletAddress.slice(41)}`
+                : tweet.author.name
+            }
+            userName={`${tweet.author.walletAddress.slice(
+              0,
+              4
+            )}...${tweet.author.walletAddress.slice(-4)}`}
+            avatar={tweet.author.profileImage}
+            text={tweet.tweet}
             isProfileImageNft={tweet.isProfileImageNft}
             timestamp={tweet.timestamp}
           />

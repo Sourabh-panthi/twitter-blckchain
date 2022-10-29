@@ -6,11 +6,20 @@ export const TwitterContext = createContext();
 export const TwitterProvider = ({ children }) => {
   const [appStatus, setAppStatus] = useState("loading");
   const [currentAccount, setCurrentAccount] = useState("");
+  const [tweets, setTweets] = useState([]);
+  const [CurrentUser, setCurrentUser] = useState({});
   const router = useRouter();
 
   useEffect(() => {
     checkIfWalletIsConnected();
   }, []);
+
+  useEffect(() => {
+    if (!currentAccount || appStatus !== "connected") return;
+
+    getCurrentUserDetails();
+    fetchTweets();
+  }, [currentAccount, appStatus]);
 
   const checkIfWalletIsConnected = async () => {
     if (!window.ethereum) return setAppStatus("noMetamask");
@@ -52,7 +61,6 @@ export const TwitterProvider = ({ children }) => {
       };
 
       await client.createIfNotExists(userDoc);
-      console.log("running yes");
 
       setAppStatus("connected");
     } catch (error) {
@@ -81,9 +89,82 @@ export const TwitterProvider = ({ children }) => {
     }
   };
 
+  const getProfileImageUrl = async (imageUri, isNft) => {
+    if (isNft) {
+      retrun`https://getway.pinata.cloud/ipfs/${imageUri}`;
+    } else {
+      return imageUri;
+    }
+  };
+
+  const fetchTweets = async () => {
+    const query = `*[_type == "tweets"] {
+      "author": author->{name, walletAddress, profileImage, isProfileImageNft},
+      tweet,
+      timestamp,
+    }|order(timestamp desc) `;
+
+    const sanityResponse = await client.fetch(query);
+    console.log("sanityResponse", sanityResponse);
+    setTweets([]);
+    console.log("sanity Response", sanityResponse);
+
+    sanityResponse.forEach(async (items) => {
+      const profileImageUrl = await getProfileImageUrl(
+        items.author.profileImage,
+        items.author.isProfileImageNft
+      );
+      const newItem = {
+        tweet: items.tweet,
+        timestamp: items.timestamp,
+        author: {
+          name: items.author.name,
+          walletAddress: items.author.walletAddress,
+          isProfileImageNft: items.author.isProfileImageNft,
+          profileImage: profileImageUrl,
+        },
+      };
+      setTweets((prevState) => [...prevState, newItem]);
+    });
+  };
+
+  const getCurrentUserDetails = async (userAccount = currentAccount) => {
+    if (appStatus !== "connected") return;
+
+    const query = `
+      *[_type == "users" && _id == "${userAccount}"]{
+        "tweets": tweets[]->{timestamp, tweet}|order(timestamp desc),
+        name,
+        profileImage,
+        isProfileImageNft,
+        coverImage,
+        walletAddress
+        }
+    `;
+    const sanityResponse = await client.fetch(query);
+    console.log("crrent user response: ", sanityResponse);
+    setCurrentUser({
+      tweets: sanityResponse[0].tweets,
+      name: sanityResponse[0].name,
+      profileImage: sanityResponse[0].profileImage,
+      isProfileImageNft: sanityResponse[0].isProfileImageNft,
+      coverImage: sanityResponse[0].coverImage,
+      walletAddress: sanityResponse[0].walletAddress,
+    });
+  };
+
   return (
     <TwitterContext.Provider
-      value={{ appStatus, currentAccount, connectWallet }}
+      value={{
+        appStatus,
+        setAppStatus,
+        currentAccount,
+        connectWallet,
+        fetchTweets,
+        tweets,
+        CurrentUser,
+        getCurrentUserDetails,
+      }}
     >
       {children}
     </TwitterContext.Provider>

@@ -1,6 +1,8 @@
-import React from "react";
+import React, { useContext } from "react";
 import { BsArrowLeftShort } from "react-icons/bs";
 import { useRouter } from "next/router";
+import { TwitterContext } from "../../context/TwitterContext";
+
 const style = {
   wrapper: `border-[#38444d] border-b`,
   header: `py-1 px-3 pt-2 flex items-center sticky top-0 bg-[#15202b] z-10`,
@@ -20,8 +22,9 @@ const style = {
 
 const ProfileHeader = () => {
   const router = useRouter();
-  const isProfileImageNFT = false;
-  const currentAccount = "0xe7DdF0e682D26d2593a03a988262735117891321";
+
+  const { currentAccount, CurrentUser } = useContext(TwitterContext);
+  console.log(CurrentUser);
   return (
     <div className={style.wrapper}>
       <div className={style.header}>
@@ -29,33 +32,40 @@ const ProfileHeader = () => {
           <BsArrowLeftShort />
         </div>
         <div className={style.details}>
-          <div className={style.primary}> Sourabh Panthi</div>
-          <div className={style.secondary}> 4 Tweets</div>
+          <div className={style.primary}>{CurrentUser.name}</div>
+          <div className={style.secondary}>
+            {" "}
+            {CurrentUser?.tweets?.length} Tweets
+          </div>
         </div>
       </div>
       <div className={style.coverPhotoContainer}>
         <img
-          src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTsha0WlXYOwO34mohehE3EOHZYgJ8l8bIDYw&usqp=CAU"
+          src={CurrentUser.coverImage}
           alt="cover"
           className={style.coverPhoto}
         />
       </div>
       <div className={style.profileImageContainer}>
         <div
-          className={isProfileImageNFT ? "hex" : style.profileImageContainer}
+          className={
+            CurrentUser.isProfileImageNFT ? "hex" : style.profileImageContainer
+          }
         >
           <img
-            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTSrdB8rRgA1qgkw0ckcTrhIa0kpV2ILvbMWg&usqp=CAU"
+            src={CurrentUser.profileImage}
             alt="profile"
             className={
-              isProfileImageNFT ? style.profileImageNft : style.profileImage
+              CurrentUser.isProfileImageNFT
+                ? style.profileImageNft
+                : style.profileImage
             }
           />
         </div>
       </div>
       <div className={style.details}>
         <div>
-          <div className={style.primary}> Sourabh Panthi</div>
+          <div className={style.primary}>{CurrentUser.name}</div>
         </div>
         <div className={style.secondary}>
           {currentAccount && currentAccount.slice(0, 4)}...

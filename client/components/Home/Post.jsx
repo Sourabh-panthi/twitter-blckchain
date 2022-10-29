@@ -49,8 +49,7 @@ const Post = ({
             )}
           </span>
           <span className={styles.handleAndTimeAgo}>
-            @{userName.slice(0, 4)}...{userName.slice(-4)} &#8226;{" "}
-            {format(new Date(timestamp).getTime())}
+            @{userName} &#8226; {format(new Date(timestamp).getTime())}
           </span>
           <div className={styles.tweet}> {text}</div>
         </div>
