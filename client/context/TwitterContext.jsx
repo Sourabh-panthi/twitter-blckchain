@@ -1,6 +1,7 @@
 import { createContext, useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import { client } from "../lib/client";
+
 export const TwitterContext = createContext();
 
 export const TwitterProvider = ({ children }) => {
@@ -89,10 +90,10 @@ export const TwitterProvider = ({ children }) => {
     }
   };
 
-  const getProfileImageUrl = async (imageUri, isNft) => {
+  const getNftProfileImageUrl = async (imageUri, isNft) => {
     if (isNft) {
-      retrun`https://getway.pinata.cloud/ipfs/${imageUri}`;
-    } else {
+      return `https://gateway.pinata.cloud/ipfs/${imageUri}`;
+    } else if (!isNft) {
       return imageUri;
     }
   };
@@ -105,15 +106,15 @@ export const TwitterProvider = ({ children }) => {
     }|order(timestamp desc) `;
 
     const sanityResponse = await client.fetch(query);
-    console.log("sanityResponse", sanityResponse);
     setTweets([]);
-    console.log("sanity Response", sanityResponse);
 
     sanityResponse.forEach(async (items) => {
-      const profileImageUrl = await getProfileImageUrl(
+      const profileImageUrl = await getNftProfileImageUrl(
         items.author.profileImage,
         items.author.isProfileImageNft
       );
+
+      console.log("profileImageUrl: ", profileImageUrl);
       const newItem = {
         tweet: items.tweet,
         timestamp: items.timestamp,
@@ -142,11 +143,16 @@ export const TwitterProvider = ({ children }) => {
         }
     `;
     const sanityResponse = await client.fetch(query);
-    console.log("crrent user response: ", sanityResponse);
+
+    const profileImageUrl = await getNftProfileImageUrl(
+      sanityResponse[0].profileImage,
+      sanityResponse[0].isProfileImageNft
+    );
+
     setCurrentUser({
       tweets: sanityResponse[0].tweets,
       name: sanityResponse[0].name,
-      profileImage: sanityResponse[0].profileImage,
+      profileImage: profileImageUrl,
       isProfileImageNft: sanityResponse[0].isProfileImageNft,
       coverImage: sanityResponse[0].coverImage,
       walletAddress: sanityResponse[0].walletAddress,

@@ -15,7 +15,6 @@ const styles = {
 
 const Feed = () => {
   const { currentAccount, CurrentUser, tweets } = useContext(TwitterContext);
-  console.log("tweets", CurrentUser);
   return (
     <div className={styles.wrapper}>
       <div className={styles.header}>
@@ -43,7 +42,7 @@ const Feed = () => {
             )}...${tweet.author.walletAddress.slice(-4)}`}
             avatar={tweet.author.profileImage}
             text={tweet.tweet}
-            isProfileImageNft={tweet.isProfileImageNft}
+            isProfileImageNft={currentAccount.isProfileImageNft}
             timestamp={tweet.timestamp}
           />
         ))}

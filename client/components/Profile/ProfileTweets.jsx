@@ -10,7 +10,6 @@ const style = {
 };
 const ProfileTweets = () => {
   const { CurrentUser } = useContext(TwitterContext);
-  console.log("CurrentUser", CurrentUser);
 
   return (
     <div className={style.wrapper}>

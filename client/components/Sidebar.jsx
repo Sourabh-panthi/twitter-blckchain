@@ -35,6 +35,7 @@ const styles = {
   moreContainer: "flex items-center mr-2",
 };
 
+Modal.setAppElement("*");
 const Sidebar = ({ initialSelectedIcon = "Home" }) => {
   const [selected, setSelected] = useState(initialSelectedIcon);
   const { currentAccount, CurrentUser } = useContext(TwitterContext);
@@ -95,7 +96,7 @@ const Sidebar = ({ initialSelectedIcon = "Home" }) => {
         <div
           className={styles.tweetButton}
           onClick={() => {
-            router.push(`${router.pathname}/?mint=${currentAccount}`);
+            router.push(`${router.pathname}?mint=${currentAccount}`);
           }}
         >
           Mint
