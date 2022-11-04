@@ -24,7 +24,7 @@ const ProfileHeader = () => {
   const router = useRouter();
 
   const { currentAccount, CurrentUser } = useContext(TwitterContext);
-  console.log(CurrentUser);
+  console.log("CurrentUser", CurrentUser);
   return (
     <div className={style.wrapper}>
       <div className={style.header}>

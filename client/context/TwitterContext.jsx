@@ -39,7 +39,7 @@ export const TwitterProvider = ({ children }) => {
         setAppStatus("notConnected");
       }
     } catch (error) {
-      console.log(error);
+      console.log("twitterContext check wallet connect", error);
     }
   };
 
@@ -58,6 +58,8 @@ export const TwitterProvider = ({ children }) => {
         isProfileImageNft: false,
         profileImage:
           "https://about.twitter.com/content/dam/about-twitter/en/brand-toolkit/brand-download-img-1.jpg.twimg.1920.jpg",
+        coverImage:
+          "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTsha0WlXYOwO34mohehE3EOHZYgJ8l8bIDYw&usqp=CAU",
         walletAddress: userAddress,
       };
 
@@ -78,6 +80,7 @@ export const TwitterProvider = ({ children }) => {
       const addressArray = await window.ethereum.request({
         method: "eth_requestAccounts",
       });
+      console.log("twitterContext addressArray: ", addressArray);
       if (addressArray.length > 0) {
         setCurrentAccount(addressArray[0]);
         createUserAccount(addressArray[0]);
@@ -86,6 +89,7 @@ export const TwitterProvider = ({ children }) => {
         setAppStatus("notConnected");
       }
     } catch (err) {
+      console.log("twitterContext wallet connect", err);
       setAppStatus("error");
     }
   };
@@ -114,7 +118,7 @@ export const TwitterProvider = ({ children }) => {
         items.author.isProfileImageNft
       );
 
-      console.log("profileImageUrl: ", profileImageUrl);
+      console.log("twitter context profileImageUrl: ", profileImageUrl);
       const newItem = {
         tweet: items.tweet,
         timestamp: items.timestamp,

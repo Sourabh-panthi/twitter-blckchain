@@ -17,7 +17,7 @@ export const pinJsonToIpfs = async (json) => {
       return response.data.IpfsHash;
     })
     .catch((error) => {
-      console.log(error);
+      console.log("pinata json to ipfs", error);
     });
 };
 
@@ -42,6 +42,6 @@ export const pinFileToIPFS = async (file, pinataMetaData) => {
       return response.data.IpfsHash;
     })
     .catch(function (error) {
-      console.log(error);
+      console.log("pinata file to ipfs ", error);
     });
 };

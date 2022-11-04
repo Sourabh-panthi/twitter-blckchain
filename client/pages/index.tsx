@@ -18,6 +18,7 @@ const styles = {
 const Home = () => {
   const { appStatus, connectWallet } = useContext(TwitterContext);
   const app = (status = appStatus) => {
+    console.log("status: ", status);
     switch (status) {
       case "connected":
         return userLogedin;

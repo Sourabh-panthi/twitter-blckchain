@@ -72,7 +72,7 @@ const ProfileImageMinter = () => {
 
       setStatus("finished");
     } catch (error) {
-      console.log(error);
+      console.log("profileImageMinter", error);
       setStatus("finished");
     }
   };
